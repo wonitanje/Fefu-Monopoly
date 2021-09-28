@@ -1,0 +1,154 @@
+body {
+    background-color: #fdfff5;
+    margin: 0;
+    /* background-image: url(https://images.unsplash.com/32/Mc8kW4x9Q3aRR3RkP5Im_IMG_4417.jpg?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8Ym9hcmR8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60); */
+    background-repeat: no-repeat;
+    /* width: 100%;
+    height: 100vh; */
+}
+
+header {
+    height: 80px;
+    text-align: center;
+}
+
+main {
+    height: 1000px;
+}
+
+table {
+    background-color: #378805;
+    margin: auto;
+    margin-top: 40px;
+    border: 2px solid;
+    box-shadow: 4px 4px 21px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 30px;
+    padding: 10px;
+}
+
+.top-cell {
+    height: 100px;
+    width: 80px;
+    border-radius: 10px;
+}
+
+.cell-family-1 {
+    width: 100%;
+    height: 10px;
+    background-color: darkgoldenrod;
+    margin: 0;
+}
+
+.cell-family-2 {
+    width: 100%;
+    height: 10px;
+    background-color: rgb(52, 214, 179);
+}
+
+.cell-family-3 {
+    width: 100%;
+    height: 10px;
+    background-color: rgb(86, 138, 216);
+}
+
+.cell-family-4 {
+    margin-top: 10px;
+    width: 100%;
+    height: 10px;
+    background-color: rgb(213, 224, 52);
+}
+
+.cell-family-5 {
+    width: 100%;
+    height: 10px;
+    background-color: rgb(255, 159, 159);
+}
+
+.cell-family-6 {
+    width: 100%;
+    height: 10px;
+    background-color: rgb(24, 187, 51);
+}
+
+.cell-family-7 {
+    width: 100%;
+    height: 10px;
+    background-color: rgb(155, 28, 28);
+}
+
+.cell-family-8 {
+    width: 100%;
+    height: 10px;
+    background-color: rgb(255, 123, 0);
+}
+
+.cell-family-9 {
+    margin-top: 10px;
+    width: 100%;
+    height: 10px;
+    background-color: rgb(0, 47, 150);
+}
+
+.cell-family-10 {
+    width: 100%;
+    height: 10px;
+    background-color: rgb(255, 0, 212);
+}
+
+.right-cell {
+    background-color: white;
+    border-radius: 10px;
+}
+
+.bottom-cell {
+    height: 100px;
+    min-width: 80px;
+    max-width: 80px;
+    border-radius: 10px;
+}
+
+.left-cell {
+    height: 80px;
+    width: 100px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.left-top, .right-top, .left-bottom, .right-bottom {
+    height: 100px;
+    width: 100px;
+    border-radius: 20px;
+}
+
+.top {
+    background-color: white;
+    margin: auto;
+}
+
+.bottom {
+    background-color: white;
+}
+
+.cube {
+    cursor: pointer;
+    font-size: xx-large;
+}
+
+.cube__inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    background-color: white;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+}
+
+.btnCube {
+    align-self: bottom;
+    background-color: rgb(255, 100, 100);
+    border-radius: 10px;
+    height: 80px;
+    font-size: large;
+    cursor: pointer;
+}
