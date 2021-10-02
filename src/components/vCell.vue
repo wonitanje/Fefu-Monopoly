@@ -7,12 +7,19 @@
     ></div>
     <div v-html="name" class="cell__name" />
     <div v-if="price != null" class="cell__price">{{ price }}р</div>
+    <v-chip :idx="ind" />
   </div>
 </template>
 
 <script>
+import vChip from '@/components/vChip.vue'
+
 export default {
   props: {
+    ind: {
+      type: Number,
+      required: true
+    },
     name: {
       type: String,
       required: true
@@ -26,11 +33,16 @@ export default {
       default: undefined
     }
   },
+
+  components: {
+    vChip,
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .cell {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -44,6 +56,7 @@ export default {
   overflow: hidden;
 
   &__name {
+    padding: 0 3px;
     display: flex;
     flex-direction: column;
     justify-content: center;

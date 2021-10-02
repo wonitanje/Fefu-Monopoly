@@ -19,6 +19,7 @@ export default {
     shuffleCubes() {
       this.first = Math.round(Math.random() * 5) + 1
       this.second = Math.round(Math.random() * 5) + 1
+      this.$emit('thow', this.first, this.second)
     }
   }
 }

@@ -1,8 +1,11 @@
 <template>
   <main class="board">
-    <v-cell v-for="(cell, idx) in cells" :key="idx" v-bind="cell" />
+    <template v-for="(cell, idx) in cells" :key="idx">
+      <v-cell v-bind="cell" />
+    </template>
     <v-player class="player player-top player-left" />
     <v-player class="player player-top player-right" />
+    <v-cube @thow="thowHandler" />
     <v-player class="player player-bot player-left" />
     <v-player class="player player-bot player-right" />
   </main>
@@ -13,6 +16,7 @@ import cells from '@/cells.js'
 import vCell from '@/components/vCell.vue'
 import vCube from '@/components/vCube.vue'
 import vPlayer from '@/components/vPlayer.vue'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -24,6 +28,33 @@ export default {
   setup() {
     return {
       cells
+    }
+  },
+
+  data() {
+    return {
+      round: 0,
+    }
+  },
+
+  computed: {
+    ...mapGetters(['players']),
+
+    currentPlayer() {
+      return this.round % 4
+    }
+  },
+
+  methods: {
+    ...mapActions(['movePlayer']),
+
+    thowHandler(num1, num2) {
+      console.log(num1, num2, this.players[this.currentPlayer])
+      this.movePlayer({ idx: this.currentPlayer, shift: num1 + num2 })
+      if (num1 == num2) {
+        return
+      }
+      this.round++
     }
   }
 }
