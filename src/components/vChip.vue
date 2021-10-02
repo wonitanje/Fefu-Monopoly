@@ -7,7 +7,9 @@
         v-if="player.position % 34 == idx"
         class="chip__item"
         :class="`chip__item-${ind}`"
-      />
+      >
+        {{ ind + 1 }}
+      </div>
     </template>
   </div>
 </template>
@@ -57,8 +59,12 @@ export default {
   }
 
   &__item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 1.5em;
     aspect-ratio: 1 / 1;
+    // color:
     border-radius: 100%;
     border: 1px solid #212121;
 

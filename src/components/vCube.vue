@@ -16,10 +16,24 @@ export default {
   },
 
   methods: {
-    shuffleCubes() {
-      this.first = Math.round(Math.random() * 5) + 1
-      this.second = Math.round(Math.random() * 5) + 1
-      this.$emit('thow', this.first, this.second)
+    async shuffleCubes() {
+      const turns = Math.round(Math.random() * 10) + 10
+      let iter = 0
+
+      const shuffle = () => {
+        iter++
+        if (iter <= turns) {
+          this.first = Math.round(Math.random() * 5) + 1
+          this.second = Math.round(Math.random() * 5) + 1
+        }
+        if (iter < turns) {
+          setTimeout(shuffle, iter * iter * 5 / (turns - iter))
+        } else {
+          this.$emit('thow', this.first, this.second)
+        }
+      }
+
+      shuffle()
     }
   }
 }
