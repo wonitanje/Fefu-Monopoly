@@ -1,4 +1,4 @@
-# fefu-monopoly
+# monopoly
 
 ## Project setup
 ```

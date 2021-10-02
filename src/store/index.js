@@ -1,7 +1,11 @@
 import { createStore } from 'vuex'
+// import { io } from 'socket.io/client-dist/socket.io.js'
+import { io } from 'socket.io/client-dist/socket.io'
 
 export default createStore({
   state: {
+    socket: io('http://localhost:3000'),
+    username: '',
     players: [{
       name: '',
       position: 0,
@@ -31,6 +35,10 @@ export default createStore({
   mutations: {
   },
   actions: {
+    setUserName({ state }, payload) {
+      state.username = payload
+    },
+
     movePlayer({ state }, payload) {
       const { key, value } = payload
       state.players[key].position += value
@@ -52,6 +60,8 @@ export default createStore({
     },
   },
   getters: {
+    socket: (state) => state.socket,
+    username: (state) => state.username,
     players: (state) => state.players,
     position: (state) => map(state.players, (player) => player.position),
     name: (state) => map(state.players, (player) => player.name),
