@@ -1,5 +1,6 @@
 <template>
   <div class="cell">
+    {{ ind }}
     <div
       v-if="family != null"
       class="cell__family"

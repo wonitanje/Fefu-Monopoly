@@ -7,30 +7,49 @@ export default createStore({
       position: 0,
       cash: 500,
       enterprises: [],
+      skip: 0,
     }, {
       name: '',
       position: 0,
       cash: 500,
       enterprises: [],
+      skip: 0,
     }, {
       name: '',
       position: 0,
       cash: 500,
       enterprises: [],
+      skip: 0,
     }, {
       name: '',
       position: 0,
       cash: 500,
       enterprises: [],
+      skip: 0,
     }],
   },
   mutations: {
   },
   actions: {
     movePlayer({ state }, payload) {
-      const { idx, shift } = payload
-      state.players[idx].position += shift
-    }
+      const { key, value } = payload
+      state.players[key].position += value
+      state.players[key].position %= 33
+    },
+
+    changeSkip({ state }, payload) {
+      const { key, value } = payload
+      state.players[key].skip += value
+    },
+
+    changeCash({ state }, payload) {
+      const { key, value } = payload
+      state.players[key].cash += value
+    },
+    getTax({ state }, payload) {
+      const { key, value } = payload
+      state.players[key].cash *= value
+    },
   },
   getters: {
     players: (state) => state.players,

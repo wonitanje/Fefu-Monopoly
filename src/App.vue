@@ -1,13 +1,12 @@
 <template>
   <main class="board">
-    <template v-for="(cell, idx) in cells" :key="idx">
+    <template v-for="cell in cells" :key="cell.ind">
       <v-cell v-bind="cell" />
     </template>
-    <v-player class="player player-top player-left" />
-    <v-player class="player player-top player-right" />
+    <template v-for="(player, idx) in players" :key="idx">
+      <v-player :class="`player-${idx}`" v-bind="player" />
+    </template>
     <v-cube @thow="thowHandler" />
-    <v-player class="player player-bot player-left" />
-    <v-player class="player player-bot player-right" />
   </main>
 </template>
 
@@ -40,21 +39,65 @@ export default {
   computed: {
     ...mapGetters(['players']),
 
-    currentPlayer() {
+    currentIndex() {
       return this.round % 4
+    },
+
+    currentPlayer() {
+      return this.players[this.currentIndex]
     }
   },
 
   methods: {
-    ...mapActions(['movePlayer']),
+    ...mapActions(['movePlayer', 'getTax', 'changeCash', 'changeSkip']),
 
     thowHandler(num1, num2) {
-      console.log(num1, num2, this.players[this.currentPlayer])
-      this.movePlayer({ idx: this.currentPlayer, shift: num1 + num2 })
+      console.log(num1, num2, this.currentPlayer)
+      const shift = num1 + num2
+      if (this.currentPlayer.position + shift > 33)
+        this.changeCash({ key: this.currentIndex, value: 150 })
+      this.movePlayer({ key: this.currentIndex, value: shift })
+      switch (this.currentPlayer.position) {
+        case 3:
+        case 23:
+          this.changeSkip({ key: this.currentIndex, value: 2 })
+          console.log('skip', this.currentPlayer.skip)
+          this.round++
+          return
+        case 5:
+        case 19:
+          var tax = 0.9
+        case 31:
+          this.getTax({ key: this.currentIndex, value: tax || 0.8 })
+          break
+        case 8:
+        case 14:
+        case 28:
+          console.log('lotery')
+          const earn = Math.round(Math.random() * 100) * 10
+          this.changeCash({ key: this.currentIndex, value: earn })
+          break
+
+        default:
+          break
+      }
+      console.log('after switch')
+      // if ([5, 19, 31].includes(this.currentPlayer.position)) {
+      //   const tax = (this.currentPlayer.position == 31) ? 0.8 : 0.9
+      //   this.getTax({ key: this.currentIndex, value: tax })
+      // }
+      // if ([3, 23].includes(this.currentPlayer.position)) {
+      //   this.changeSkip({ key: this.currentIndex, value: 2 })
+      //   return this.round++
+      // }
       if (num1 == num2) {
         return
       }
       this.round++
+      while (this.currentPlayer.skip) {
+        this.changeSkip({ key: this.currentIndex, value: -1 })
+        this.round++
+      }
     }
   }
 }
