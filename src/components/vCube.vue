@@ -27,7 +27,7 @@ export default {
           this.second = Math.round(Math.random() * 5) + 1
         }
         if (iter < turns) {
-          setTimeout(shuffle, iter * iter * 5 / (turns - iter))
+          setTimeout(shuffle, iter * iter * 3 / (turns - iter))
         } else {
           this.$emit('thow', this.first, this.second)
         }
