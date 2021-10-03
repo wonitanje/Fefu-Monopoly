@@ -17,16 +17,6 @@ export default {
 
   emits: ['thow'],
 
-  setup() {
-    return {
-      mixing: false,
-    }
-  },
-
-  updated() {
-    this.mixing = false
-  },
-
   methods: {
     async shuffleCubes() {
       let iter = 0
@@ -34,15 +24,12 @@ export default {
         iter++
         this.$refs.cube1.textContent = Math.round(Math.random() * 5) + 1
         this.$refs.cube2.textContent = Math.round(Math.random() * 5) + 1
-        if (iter == 12) {
-          this.$emit('thow')
+        if (iter >= 12) {
+          return this.$emit('thow')
         }
-        if (this.mixing) {
-          setTimeout(shuffle, iter * iter * 5)
-        }
+        setTimeout(shuffle, iter * iter * 5)
       }
       
-      this.mixing = true
       shuffle()
     }
   },
