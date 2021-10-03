@@ -1,6 +1,5 @@
 import { createStore } from 'vuex'
 import createPersistedState from "vuex-persistedstate"
-// import { io } from 'socket.io/client-dist/socket.io.js'
 import { io } from 'socket.io/client-dist/socket.io'
 
 export default createStore({
@@ -8,19 +7,23 @@ export default createStore({
     socket: io('http://localhost:3000'),
     username: '',
     players: [],
+    events: [],
   },
   mutations: {
     username(state, payload) {
       state.username = payload
-    }
+    },
+
+    players(state, payload) {
+      state.players = payload
+    },
   },
   actions: {
-    updatePlayers({ state }, payload) {
-      state.players = payload
+    updatePlayers({ commit }, payload) {
+      commit('players', payload)
     },
 
     setUserName({ commit }, payload) {
-      console.log('set', payload)
       commit('username', payload)
     },
 
@@ -43,8 +46,17 @@ export default createStore({
       const { key, value } = payload
       state.players[key].cash *= value
     },
+
+    pushEvent({ state }, payload) {
+      state.events.push(payload)
+    },
+
+    clearEvents({ state }) {
+      state.events = []
+    },
   },
   getters: {
+    events: (state) => state.events,
     socket: (state) => state.socket,
     username: (state) => state.username,
     players: (state) => state.players,
@@ -52,7 +64,7 @@ export default createStore({
 
   plugins: [
     createPersistedState({
-      paths: ['username'],
+      paths: ['username', 'events'],
     })
   ],
 })

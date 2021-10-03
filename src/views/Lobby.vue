@@ -36,7 +36,6 @@ export default {
       },
       set(value) {
         this.inputError = false
-        console.log('setting', value)
         return this.setUserName(value)
       }
     }

@@ -6,13 +6,16 @@
       :class="`cell__family-${family}`"
     ></div>
     <div v-html="name" class="cell__name" />
-    <div v-if="price != null" class="cell__price">{{ price }}р</div>
+    <div v-if="price != null" class="cell__price" :class="inhere">
+      {{ price }}р
+    </div>
     <v-chip :idx="ind" />
   </div>
 </template>
 
 <script>
 import vChip from '@/components/vChip.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   props: {
@@ -36,7 +39,19 @@ export default {
 
   components: {
     vChip,
-  }
+  },
+
+  computed: {
+    ...mapGetters(['players']),
+
+    inhere() {
+      const ind = this.players.map((player) => player.enterprise.includes(this.ind)).indexOf(true)
+      if (ind == -1) {
+        return ''
+      }
+      return `player-color-${ind}`
+    }
+  },
 }
 </script>
 
@@ -65,6 +80,10 @@ export default {
   }
 
   &__price {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
     height: 18px;
   }
 }

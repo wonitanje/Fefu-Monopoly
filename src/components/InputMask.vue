@@ -116,7 +116,6 @@ export default {
   &.active {
     font-size: 12px;
     top: 12px;
-    // left: 12px;
   }
 
   &.focus {

@@ -1,12 +1,10 @@
 <template>
   <div class="chip">
-    <!-- {{ idx }} -->
-    <!-- <div class="chip__block top"> -->
     <template v-for="(player, ind) in players" :key="ind">
       <div
         v-if="player.position % 34 == idx"
         class="chip__item"
-        :class="`chip__item-${ind}`"
+        :class="`player-color-${ind}`"
       >
         {{ ind + 1 }}
       </div>
@@ -39,9 +37,6 @@ export default {
   left: 0;
   display: grid;
   grid-template: 1fr 1fr / 1fr 1fr;
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: space-between;
   width: 100%;
   height: 100%;
 
@@ -64,7 +59,6 @@ export default {
     align-items: center;
     width: 1.5em;
     aspect-ratio: 1 / 1;
-    // color:
     border-radius: 100%;
     border: 1px solid #212121;
 
@@ -74,19 +68,6 @@ export default {
     }
     &:nth-child(even) {
       justify-self: flex-end;
-    }
-
-    &-0 {
-      background-color: #0fdb7c;
-    }
-    &-1 {
-      background-color: #df35b4;
-    }
-    &-2 {
-      background-color: #e72d43;
-    }
-    &-3 {
-      background-color: #e7eb1b;
     }
   }
 }

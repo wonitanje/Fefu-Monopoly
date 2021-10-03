@@ -1,9 +1,11 @@
 <template>
   <div class="player">
-    <p class="name">Игрок: {{ name }}</p>
-    <p class="cash">Бюджет: {{ cash }}</p>
-    <p class="pos">Позиция: {{ position }}</p>
-    <p class="skip">Отдых: {{ skip }}</p>
+    <div v-if="name.length > 0" class="player__inner">
+      <p class="name">Игрок: {{ name }}</p>
+      <p class="cash">Бюджет: {{ cash }}</p>
+      <p class="pos">Позиция: {{ position }}</p>
+      <p class="skip">Отдых: {{ skip }}</p>
+    </div>
   </div>
 </template>
 
@@ -12,7 +14,7 @@ export default {
   props: {
     name: {
       type: String,
-      default: 'Игрок'
+      default: ''
     },
     cash: {
       type: Number,
@@ -32,12 +34,16 @@ export default {
 
 <style lang="scss" scoped>
 .player {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  // background-color: #fff;
   grid-row: 2 / 4;
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
 
   &-2,
   &-3 {
@@ -45,13 +51,13 @@ export default {
   }
 
   &-0,
-  &-2, {
-    grid-column: 2 / 7;
+  &-2 {
+    grid-column: 2 / 5;
   }
 
   &-1,
   &-3 {
-    grid-column: 7 / 12;
+    grid-column: 5 / 9;
   }
 
   & p {

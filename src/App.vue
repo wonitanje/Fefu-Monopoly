@@ -1,6 +1,8 @@
 <template>
   <router-view />
-  <v-modal v-if="modalActive" @confirm="confirmHandler">{{ modalMessage }}</v-modal>
+  <v-modal v-if="modalActive" @confirm="confirmHandler">{{
+    modalMessage
+  }}</v-modal>
 </template>
 
 <script>
@@ -21,6 +23,10 @@ export default {
       this.$router.push({ name: 'lobby' })
     })
 
+    this.socket.on('clearEvents', () => {
+      this.clearEvents()
+    })
+
     this.socket.on('players', (players) => {
       console.log('players update', players)
       this.updatePlayers(players)
@@ -29,6 +35,15 @@ export default {
     if (this.username) {
       this.socket.emit('auth', this.username)
     }
+
+    this.socket.on('confirm', (msg) => {
+      this.modalMessage = msg
+      this.modalActive = true
+    })
+
+    this.socket.on('event', (event) => {
+      this.pushEvent(event)
+    })
   },
 
   data() {
@@ -43,7 +58,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['updatePlayers']),
+    ...mapActions(['updatePlayers', 'pushEvent', 'clearEvents']),
 
     confirmHandler(confirmed) {
       this.modalActive = false
@@ -63,5 +78,20 @@ export default {
 
 .title {
   font-size: 20px;
+}
+
+.player-color {
+  &-0 {
+    background-color: #0fdb7c;
+  }
+  &-1 {
+    background-color: #df35b4;
+  }
+  &-2 {
+    background-color: #e72d43;
+  }
+  &-3 {
+    background-color: #e7eb1b;
+  }
 }
 </style>
