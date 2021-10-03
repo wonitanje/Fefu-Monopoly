@@ -99,52 +99,52 @@ export default {
       this.socket.emit('throw')
       // shuffle()
       // console.log(num1, num2, this.currentPlayer)
-      const shift = this.cubes.reduce((sum, val) => sum + val, 0)
-      if (this.currentPlayer.position + shift > 33)
-        this.changeCash({ key: this.currentIndex, value: 150 })
-      this.movePlayer({ key: this.currentIndex, value: shift })
-      switch (this.currentPlayer.position) {
-        case 3:
-        case 23:
-          this.changeSkip({ key: this.currentIndex, value: 2 })
-          console.log('skip', this.currentPlayer.skip)
-          this.round++
-          return
-        case 5:
-        case 19:
-          var tax = 0.9
-        case 31:
-          this.getTax({ key: this.currentIndex, value: tax || 0.8 })
-          break
-        case 8:
-        case 14:
-          var multy = 10
-        case 28:
-          console.log('lotery')
-          const earn = Math.round(Math.random() * 100) * multy || 20
-          this.changeCash({ key: this.currentIndex, value: earn })
-          break
+      // const shift = this.cubes.reduce((sum, val) => sum + val, 0)
+      // if (this.currentPlayer.position + shift > 33)
+      //   this.changeCash({ key: this.currentIndex, value: 150 })
+      // this.movePlayer({ key: this.currentIndex, value: shift })
+      // switch (this.currentPlayer.position) {
+      //   case 3:
+      //   case 23:
+      //     this.changeSkip({ key: this.currentIndex, value: 2 })
+      //     console.log('skip', this.currentPlayer.skip)
+      //     this.round++
+      //     return
+      //   case 5:
+      //   case 19:
+      //     var tax = 0.9
+      //   case 31:
+      //     this.getTax({ key: this.currentIndex, value: tax || 0.8 })
+      //     break
+      //   case 8:
+      //   case 14:
+      //     var multy = 10
+      //   case 28:
+      //     console.log('lotery')
+      //     const earn = Math.round(Math.random() * 100) * multy || 20
+      //     this.changeCash({ key: this.currentIndex, value: earn })
+      //     break
 
-        default:
-          break
-      }
-      console.log('after switch')
-      // if ([5, 19, 31].includes(this.currentPlayer.position)) {
-      //   const tax = (this.currentPlayer.position == 31) ? 0.8 : 0.9
-      //   this.getTax({ key: this.currentIndex, value: tax })
+      //   default:
+      //     break
       // }
-      // if ([3, 23].includes(this.currentPlayer.position)) {
-      //   this.changeSkip({ key: this.currentIndex, value: 2 })
-      //   return this.round++
+      // console.log('after switch')
+      // // if ([5, 19, 31].includes(this.currentPlayer.position)) {
+      // //   const tax = (this.currentPlayer.position == 31) ? 0.8 : 0.9
+      // //   this.getTax({ key: this.currentIndex, value: tax })
+      // // }
+      // // if ([3, 23].includes(this.currentPlayer.position)) {
+      // //   this.changeSkip({ key: this.currentIndex, value: 2 })
+      // //   return this.round++
+      // // }
+      // if (this.cubes[0] == this.cubes[1]) {
+      //   return
       // }
-      if (this.cubes[0] == this.cubes[1]) {
-        return
-      }
-      this.round++
-      while (this.currentPlayer.skip) {
-        this.changeSkip({ key: this.currentIndex, value: -1 })
-        this.round++
-      }
+      // this.round++
+      // while (this.currentPlayer.skip) {
+      //   this.changeSkip({ key: this.currentIndex, value: -1 })
+      //   this.round++
+      // }
     }
   }
 }
