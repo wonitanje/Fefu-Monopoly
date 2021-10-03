@@ -1,7 +1,7 @@
 <template>
   <div class="player">
     <div v-if="name.length > 0" class="player__inner">
-      <p class="name">Игрок: {{ name }}</p>
+      <p class="name">Игрок {{ idx + 1 }}: {{ name }} {{ you }}</p>
       <p class="cash">Бюджет: {{ cash }}</p>
       <p class="pos">Позиция: {{ position }}</p>
       <p class="skip">Отдых: {{ skip }}</p>
@@ -10,8 +10,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   props: {
+    idx: {
+      type: Number,
+      required: true
+    },
     name: {
       type: String,
       default: ''
@@ -28,6 +34,16 @@ export default {
       type: Number,
       default: 0,
     },
+  },
+
+  computed: {
+    ...mapGetters(['username']),
+
+    you() {
+      if (this.name == this.username) 
+        return '(Вы)'
+      return ''
+    }
   }
 }
 </script>

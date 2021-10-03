@@ -32,8 +32,8 @@ const playerModel = {
   skip: 0,
 }
 
-function enterpriseName(cell) {
-  return cell.name.replace(/-/g, '<wrb>')
+function enterpriseName(name) {
+  return name.replace(/-/g, '<wrb>')
 }
 
 function rubles(value) {
@@ -82,9 +82,9 @@ io.on('connection', (socket) => {
       boughtEnterprises[currentPos] = idx
       currentPlayer.enterprise.push(currentPos)
       currentPlayer.cash -= currentCell.price
-      io.emit('event', `${currentPlayer.name} приобрел ${enterpriseName(currentCell)}`)
+      io.emit('event', `${currentPlayer.name} приобрел ${enterpriseName(currentCell.name)}`)
     } else {
-      io.emit('event', `${currentPlayer.name} отказался от покупки ${currentCell.name}`)
+      io.emit('event', `${currentPlayer.name} отказался от покупки ${enterpriseName(currentCell.name)}`)
     }
 
     nextTurn()
@@ -153,10 +153,10 @@ io.on('connection', (socket) => {
         if (boughtEnterprises[currentPos] == null) {
           if (currentPlayer.cash > currentCell.price) {
             io.emit('players', players)
-            socket.emit('confirm', `Хотите купить ${currentCell.name} за ${currentCell.price} ${rubles(currentCell.price)}?`)
+            socket.emit('confirm', `Хотите купить ${enterpriseName(currentCell.name)} за ${currentCell.price} ${rubles(currentCell.price)}?`)
             return
           } else {
-            io.emit('event', `${currentPlayer.name} отказался от покупки ${currentCell.name}`)
+            io.emit('event', `${currentPlayer.name} отказался от покупки ${enterpriseName(currentCell.name)}`)
           }
         } else if (boughtEnterprises[currentPos] != idx) {
           const cost = Math.round(currentCell.price / 10)
@@ -198,12 +198,12 @@ io.on('connection', (socket) => {
         }
       } else {
         cPlayer.skip -= 1
-        const msg = (cPlayer.skip < 0) ? 'еще не вернулся' : 'все еще на отдыхе'
+        const msg = (cPlayer.skip > 0) ? 'еще не вернулся' : 'все еще на отдыхе'
         io.emit('event', `${cPlayer.name} ${msg}.`)
       }
       round++
     }
-    io.emit('event', `Ход ${cPlayer.name}`)
+    io.emit('event', `Ход ${players[round % players.length].name}`)
   }
 })
 
