@@ -3,8 +3,6 @@
     <div v-if="name.length > 0" class="player__inner">
       <p class="name">Игрок {{ idx + 1 }}: {{ name }} {{ you }}</p>
       <p class="cash">Бюджет: {{ cash }}</p>
-      <p class="pos">Позиция: {{ position }}</p>
-      <p class="skip">Отдых: {{ skip }}</p>
     </div>
   </div>
 </template>
@@ -23,14 +21,6 @@ export default {
       default: ''
     },
     cash: {
-      type: Number,
-      default: 0,
-    },
-    position: {
-      type: Number,
-      default: 0,
-    },
-    skip: {
       type: Number,
       default: 0,
     },

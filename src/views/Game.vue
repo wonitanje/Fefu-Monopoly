@@ -4,7 +4,12 @@
       <v-cell v-bind="cell" />
     </template>
     <template v-for="(player, idx) in playersPlug" :key="idx">
-      <v-player :class="`player-${idx}`" v-bind="player" :idx="idx" />
+      <v-player
+        :class="`player-${idx}`"
+        :name="player.name"
+        :cash="player.cash"
+        :idx="idx"
+      />
     </template>
     <v-cube @thow="thowHandler" :values="cubes" />
     <event-list />

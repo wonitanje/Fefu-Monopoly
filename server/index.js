@@ -22,6 +22,7 @@ const io = require("socket.io")(http, {
 import cells from '../src/cells.js'
 let boughtEnterprises = {}
 let round = 0
+let inRow = 0
 let players = []
 let disconnectedPlayers = []
 let cube1 = 0, cube2 = 0
@@ -30,10 +31,15 @@ const playerModel = {
   cash: 500,
   position: 0,
   skip: 0,
+  out: false,
+}
+
+function getPlayers() {
+  return players.map(({ name, cash, position, enterprise }) => ({ name, cash, position, enterprise }))
 }
 
 function enterpriseName(name) {
-  return name.replace(/-/g, '<wrb>')
+  return name.replace('<wrb>', '')
 }
 
 function rubles(value) {
@@ -46,7 +52,7 @@ function rubles(value) {
 }
 
 io.on('connection', (socket) => {
-  console.log('user connected')
+  console.log('user connected', socket.id)
   let username, idx, currentPlayer, currentCell, currentPos
 
   socket.on('auth', (name) => {
@@ -64,9 +70,9 @@ io.on('connection', (socket) => {
 
     const ind = disconnectedPlayers.map((player) => player.name == name).indexOf(true)
     if (ind != -1) {
-      idx = players.push(disconnectedPlayers.splice(ind, 1)[0]) - 1
+      idx = players.push(Object.assign(disconnectedPlayers.splice(ind, 1)[0], { socket })) - 1
     } else {
-      const user = Object.assign({}, playerModel, { name, enterprise: [], })
+      const user = Object.assign({}, playerModel, { name, enterprise: [], socket })
       idx = players.push(user) - 1
       socket.emit('clearEvents')
     }
@@ -74,30 +80,30 @@ io.on('connection', (socket) => {
 
     username = name
     socket.emit('auth', 'success')
-    io.emit('players', players)
+    io.emit('players', getPlayers())
   })
 
-  socket.on('buy', (confirmed) => {
-    if (confirmed) {
-      boughtEnterprises[currentPos] = idx
-      currentPlayer.enterprise.push(currentPos)
-      currentPlayer.cash -= currentCell.price
-      io.emit('event', `${currentPlayer.name} приобрел ${enterpriseName(currentCell.name)}`)
-    } else {
-      io.emit('event', `${currentPlayer.name} отказался от покупки ${enterpriseName(currentCell.name)}`)
-    }
-
-    nextTurn()
-  })
-
-  socket.on('throw', () => {
+  socket.on('throw', async () => {
     if (round % players.length != idx) {
       return
     }
     
+    // if (round < 1) {
+    //   cube1 = 1
+    //   cube2 = 1
+    // } else {
     cube1 = Math.round(Math.random() * 5) + 1
     cube2 = Math.round(Math.random() * 5) + 1
+    // }
     io.emit('throw', [cube1, cube2])
+    if (inRow == 2 && cube1 == cube2) {
+      currentPlayer.position = 11
+      currentPlayer.skip = 3
+      io.emit('event', `${currentPlayer.name} отправлен в тюрьму на 3 хода по подозрению в жульничестве`)
+      io.emit('players', getPlayers())
+      nextTurn()
+      return
+    }
     currentPlayer.position += cube1 + cube2
     if (currentPlayer.position >= 33) {
       currentPlayer.position %= 33
@@ -152,9 +158,8 @@ io.on('connection', (socket) => {
         currentCell = cells[ind]
         if (boughtEnterprises[currentPos] == null) {
           if (currentPlayer.cash > currentCell.price) {
-            io.emit('players', players)
-            socket.emit('confirm', `Хотите купить ${enterpriseName(currentCell.name)} за ${currentCell.price} ${rubles(currentCell.price)}?`)
-            return
+            io.emit('players', getPlayers())
+            await offer(currentPlayer, currentCell)
           } else {
             io.emit('event', `${currentPlayer.name} отказался от покупки ${enterpriseName(currentCell.name)}`)
           }
@@ -168,6 +173,13 @@ io.on('connection', (socket) => {
         break
     }
 
+    io.emit('players', getPlayers())
+
+    if (cube1 == cube2) {
+      inRow++
+      io.emit('event', `${currentPlayer.name} выбил 2 одиковых значения и ходит снова`)
+      return
+    }
     nextTurn()
   })
 
@@ -177,33 +189,68 @@ io.on('connection', (socket) => {
       if (ind != -1) {
         disconnectedPlayers.push(players.splice(ind, 1)[0])
       }
-      io.emit('players', players)
+      io.emit('players', getPlayers())
     }
   })
 
-  function nextTurn() {
-    io.emit('players', players)
-
-    if (cube1 == cube2) {
-      return io.emit('event', `${currentPlayer.name} выбил 2 одиковых значения и ходит снова`)
-    }
+  async function nextTurn() {
+    inRow = 0
     round++
     let cPlayer = players[round % players.length]
     const bankruptcy = cPlayer.cash < 0
     while (cPlayer.skip > 0 || bankruptcy) {
-      cPlayer = players[round % players.length]
       if (bankruptcy) {
         if (!cPlayer.out) {
+          cPlayer.out = true
           io.emit('event', `${cPlayer.name} объявляет себя банкротом.`)
         }
+      } else if (cPlayer.position == 11) {
+        await deposit(cPlayer)
       } else {
         cPlayer.skip -= 1
         const msg = (cPlayer.skip > 0) ? 'еще не вернулся' : 'все еще на отдыхе'
         io.emit('event', `${cPlayer.name} ${msg}.`)
+        io.emit('players', getPlayers())
       }
       round++
+      cPlayer = players[round % players.length]
     }
-    io.emit('event', `Ход ${players[round % players.length].name}`)
+    cPlayer.socket.emit('event', `Ваш ход`)
+    cPlayer.socket.broadcast.emit('event', `Ход ${cPlayer.name}`)
+  }
+
+  function offer(player, cell) {
+    return new Promise((res, rej) => {
+      const msg = `Хотите купить ${enterpriseName(cell.name)} за ${cell.price} ${rubles(cell.price)}?`
+      socket.emit('confirm', msg, (confirmed) => {
+        if (confirmed) {
+          boughtEnterprises[currentPos] = idx
+          player.enterprise.push(currentPos)
+          player.cash -= cell.price
+          io.emit('event', `${player.name} приобрел ${enterpriseName(cell.name)}`)
+          res()
+        } else {
+          io.emit('event', `${player.name} отказался от покупки ${enterpriseName(cell.name)}`)
+          res()
+        }
+      })
+    })
+  }
+
+  function deposit(player) {
+    return new Promise((res, rej) => {
+      player.socket.emit('confirm', 'Желаете досрочно выйти из тюрьмы за 50 рублей?', (confirmed) => {
+        if (confirmed) {
+          player.skip = 0
+          io.emit('event', `${player.name} внес залог 50 рублей.`)
+          res()
+        } else {
+          io.emit('event', `${player.name} сидит за решеткой.`)
+          player.skip -= 1
+          res()
+        }
+      })
+    })
   }
 })
 

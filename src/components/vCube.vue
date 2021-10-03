@@ -22,12 +22,13 @@ export default {
       let iter = 0
       const shuffle = () => {
         iter++
-        this.$refs.cube1.textContent = Math.round(Math.random() * 5) + 1
-        this.$refs.cube2.textContent = Math.round(Math.random() * 5) + 1
-        if (iter >= 12) {
-          return this.$emit('thow')
+        if (iter < 12) {
+          this.$refs.cube1.textContent = Math.round(Math.random() * 5) + 1
+          this.$refs.cube2.textContent = Math.round(Math.random() * 5) + 1
+          setTimeout(shuffle, iter * iter * 5)
+        } else {
+          this.$emit('thow')
         }
-        setTimeout(shuffle, iter * iter * 5)
       }
       
       shuffle()

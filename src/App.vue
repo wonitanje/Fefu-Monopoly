@@ -34,9 +34,10 @@ export default {
       this.socket.emit('auth', this.username)
     }
 
-    this.socket.on('confirm', (msg) => {
+    this.socket.on('confirm', (msg, cb) => {
       this.modalMessage = msg
       this.modalActive = true
+      this.modalAnswer = cb
     })
 
     this.socket.on('event', (event) => {
@@ -60,7 +61,7 @@ export default {
 
     confirmHandler(confirmed) {
       this.modalActive = false
-      this.socket.emit('buy', confirmed)
+      this.modalAnswer(confirmed)
     }
   },
 }
