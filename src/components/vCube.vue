@@ -3,7 +3,13 @@
     <div class="cube__display">{{ values[0] }}</div>
     <div @click.stop="shuffleCubes" class="cube__btn">Бросить<br />кубики</div>
     <div class="cube__display">{{ values[1] }}</div>
+    <div class="event">
+      <div class="event__list">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat ullam autem, recusandae hic corrupti quisquam at, corporis quo inventore ut quam mollitia! Quisquam eveniet sit libero, accusantium cupiditate cum nostrum.
+      </div>
+    </div>
   </div>
+  
 </template>
 
 <script>
@@ -44,6 +50,32 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+template {
+  display: flex;
+  justify-content: space-between;
+}
+
+.event {
+  width: 320px;
+  height: 80px;
+  background-color: #fff;
+  border-radius: 10px;
+  border: 2px solid #212121;
+
+  &__list {
+    padding: 15px 10px;
+    height: 100%;
+    text-align: left;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    & > p::nth-child(even) {
+      background-color: #f6f6f6;
+    }
+  }
+}
+
 .cube {
   grid-row-start: 4;
   grid-row-end: 5;
