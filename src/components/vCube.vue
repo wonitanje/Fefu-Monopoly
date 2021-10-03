@@ -61,7 +61,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    // height: 100%;
+    min-width: 80px;
     aspect-ratio: 1 / 1;
     border-radius: 8px;
     border: 2px solid #212121;

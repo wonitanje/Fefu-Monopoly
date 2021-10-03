@@ -1,11 +1,17 @@
 <template>
   <router-view />
+  <v-modal v-if="modalActive" @confirm="confirmHandler">{{ modalMessage }}</v-modal>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import vModal from '@/components/vModal.vue'
 
 export default {
+  components: {
+    vModal,
+  },
+
   created() {
     this.socket.on('auth', (status) => {
       console.log('socket says:', status)
@@ -25,12 +31,24 @@ export default {
     }
   },
 
+  data() {
+    return {
+      modalMessage: '',
+      modalActive: false,
+    }
+  },
+
   computed: {
     ...mapGetters(['socket', 'username']),
   },
 
   methods: {
-    ...mapActions(['updatePlayers'])
+    ...mapActions(['updatePlayers']),
+
+    confirmHandler(confirmed) {
+      this.modalActive = false
+      this.socket.emit('buy', confirmed)
+    }
   },
 }
 </script>
@@ -40,6 +58,7 @@ export default {
   height: 100%;
   width: 100%;
   font-family: Arial, Helvetica, sans-serif;
+  position: relative;
 }
 
 .title {
