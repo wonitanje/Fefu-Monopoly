@@ -1,39 +1,43 @@
 <template>
   <div class="cube">
-    <div class="cube__display">{{ first }}</div>
+    <div class="cube__display">{{ values[0] }}</div>
     <div @click.stop="shuffleCubes" class="cube__btn">Бросить<br />кубики</div>
-    <div class="cube__display">{{ second }}</div>
+    <div class="cube__display">{{ values[1] }}</div>
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      first: 0,
-      second: 0,
+  props: {
+    values: {
+      type: Array,
+      default: [0, 0]
     }
   },
 
+  emits: ['thow'],
+
   methods: {
     async shuffleCubes() {
-      const turns = Math.round(Math.random() * 10) + 10
-      let iter = 0
+      this.$emit('thow')
+      // const turns = Math.round(Math.random() * 10) + 10
+      // let iter = 0
 
-      const shuffle = () => {
-        iter++
-        if (iter <= turns) {
-          this.first = Math.round(Math.random() * 5) + 1
-          this.second = Math.round(Math.random() * 5) + 1
-        }
-        if (iter < turns) {
-          setTimeout(shuffle, iter * iter * 3 / (turns - iter))
-        } else {
-          this.$emit('thow', this.first, this.second)
-        }
-      }
+      // const shuffle = () => {
+      //   iter++
+      //   if (iter <= turns) {
+      //     this.first = Math.round(Math.random() * 5) + 1
+      //     this.second = Math.round(Math.random() * 5) + 1
+      //   }
+      //   if (iter < turns) {
+      //     setTimeout(shuffle, iter * iter * 3 / (turns - iter))
+      //   } else {
+      //     this.$emit('thow', this.first, this.second)
+      //   }
+      // }
 
-      shuffle()
+      // this.socket.emit('thow')
+      // shuffle()
     }
   }
 }

@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import createPersistedState from "vuex-persistedstate"
 // import { io } from 'socket.io/client-dist/socket.io.js'
 import { io } from 'socket.io/client-dist/socket.io'
 
@@ -6,37 +7,21 @@ export default createStore({
   state: {
     socket: io('http://localhost:3000'),
     username: '',
-    players: [{
-      name: '',
-      position: 0,
-      cash: 500,
-      enterprises: [],
-      skip: 0,
-    }, {
-      name: '',
-      position: 0,
-      cash: 500,
-      enterprises: [],
-      skip: 0,
-    }, {
-      name: '',
-      position: 0,
-      cash: 500,
-      enterprises: [],
-      skip: 0,
-    }, {
-      name: '',
-      position: 0,
-      cash: 500,
-      enterprises: [],
-      skip: 0,
-    }],
+    players: [],
   },
   mutations: {
+    username(state, payload) {
+      state.username = payload
+    }
   },
   actions: {
-    setUserName({ state }, payload) {
-      state.username = payload
+    updatePlayers({ state }, payload) {
+      state.players = payload
+    },
+
+    setUserName({ commit }, payload) {
+      console.log('set', payload)
+      commit('username', payload)
     },
 
     movePlayer({ state }, payload) {
@@ -63,9 +48,11 @@ export default createStore({
     socket: (state) => state.socket,
     username: (state) => state.username,
     players: (state) => state.players,
-    position: (state) => map(state.players, (player) => player.position),
-    name: (state) => map(state.players, (player) => player.name),
-    cash: (state) => map(state.players, (player) => player.cash),
-    enterprise: (state) => map(state.players, (player) => player.enterprise),
-  }
+  },
+
+  plugins: [
+    createPersistedState({
+      paths: ['username'],
+    })
+  ],
 })
