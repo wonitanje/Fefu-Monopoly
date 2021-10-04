@@ -80,6 +80,7 @@ io.on('connection', (socket) => {
       idx = players.push(user) - 1
       io.emit('clearEvents')
       io.emit('event', 'Новая игра')
+      round = 0
       players[0].socket.broadcast.emit('event', `Ход ${players[0].name}`)
       players[0].socket.emit('event', `Ваш ход`)
     }
