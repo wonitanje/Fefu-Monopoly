@@ -4,7 +4,7 @@ import { io } from 'socket.io/client-dist/socket.io'
 
 export default createStore({
   state: {
-    socket: io('http://localhost:3000'),
+    socket: io('/'),
     username: '',
     players: [],
     events: [],

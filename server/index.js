@@ -1,13 +1,17 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
+const path = require('path')
 
 const cors_options = {
   origin: ['http://localhost:8080', 'https://fefu-monopoly.herokuapp.com'],
   optionsSuccessStatus: 200
 }
 
+const root = path.join(__dirname + '/../dist')
 const app = express()
 app.use(cors(cors_options))
+app.use(express.static(root))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
@@ -91,13 +95,8 @@ io.on('connection', (socket) => {
       return
     }
     
-    // if (round < 1) {
-    //   cube1 = 1
-    //   cube2 = 1
-    // } else {
     cube1 = Math.round(Math.random() * 5) + 1
     cube2 = Math.round(Math.random() * 5) + 1
-    // }
     io.emit('throw', [cube1, cube2])
     if (inRow == 2 && cube1 == cube2) {
       currentPlayer.position = 11
@@ -258,9 +257,9 @@ io.on('connection', (socket) => {
 })
 
 app.get(/./, (req, res) => {
-  res.sendFile(__dirname + '/index.html')
+  res.sendFile(`${root}/index.html`)
 })
 
-http.listen(3000, () => {
+http.listen(process.env.PORT || 3000, () => {
   console.log('listening on *:3000')
 })
