@@ -93,7 +93,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('throw', async () => {
-    if (round % players.length != idx) {
+    if (players[round % players.length].name != username) {
       return
     }
     
