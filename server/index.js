@@ -78,9 +78,10 @@ io.on('connection', (socket) => {
       players = players.map((player) => Object.assign(player, playerModel, { enterprise: [] }))
       const user = Object.assign({}, playerModel, { name, enterprise: [], socket })
       idx = players.push(user) - 1
+      round = 0
+      boughtEnterprises = {}
       io.emit('clearEvents')
       io.emit('event', 'Новая игра')
-      round = 0
       players[0].socket.broadcast.emit('event', `Ход ${players[0].name}`)
       players[0].socket.emit('event', `Ваш ход`)
     }
