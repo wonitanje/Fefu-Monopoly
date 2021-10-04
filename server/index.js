@@ -201,6 +201,9 @@ io.on('connection', (socket) => {
       disconnectedPlayers.push(players.splice(ind, 1)[0])
     }
     io.emit('players', getPlayers())
+    const cPlayer = players[round % players.length]
+    cPlayer.socket.emit('event', `Ваш ход`)
+    cPlayer.socket.broadcast.emit('event', `Ход ${cPlayer.name}`)
   })
 
   async function nextTurn() {
