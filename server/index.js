@@ -185,14 +185,20 @@ io.on('connection', (socket) => {
     nextTurn()
   })
 
-  socket.on('disconnect', () => {
-    if (username) {
-      const ind = players.map((player) => player.name == username).indexOf(true)
-      if (ind != -1) {
-        disconnectedPlayers.push(players.splice(ind, 1)[0])
-      }
-      io.emit('players', getPlayers())
+  socket.on('leave', (name) => {
+    const ind = players.map((player) => player.name == name).indexOf(true)
+    if (ind != -1) {
+      disconnectedPlayers.push(players.splice(ind, 1)[0])
     }
+    io.emit('players', getPlayers())
+  })
+
+  socket.on('disconnect', () => {
+    const ind = players.map((player) => player.name == username).indexOf(true)
+    if (ind != -1) {
+      disconnectedPlayers.push(players.splice(ind, 1)[0])
+    }
+    io.emit('players', getPlayers())
   })
 
   async function nextTurn() {

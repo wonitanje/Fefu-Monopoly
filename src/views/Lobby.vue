@@ -21,6 +21,12 @@ export default {
     FormButton,
   },
 
+  created() {
+    if (this.username) {
+      this.socket.emit('leave', this.username)
+    }
+  },
+
   data() {
     return {
       inputError: false,
