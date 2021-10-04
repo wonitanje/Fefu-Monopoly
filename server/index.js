@@ -27,7 +27,6 @@ let players = []
 let disconnectedPlayers = []
 let cube1 = 0, cube2 = 0
 const playerModel = {
-  name: '',
   cash: 500,
   position: 0,
   skip: 0,
@@ -72,9 +71,13 @@ io.on('connection', (socket) => {
     if (ind != -1) {
       idx = players.push(Object.assign(disconnectedPlayers.splice(ind, 1)[0], { socket })) - 1
     } else {
+      players = players.map((player) => Object.assign(player, playerModel, { enterprise: [] }))
       const user = Object.assign({}, playerModel, { name, enterprise: [], socket })
       idx = players.push(user) - 1
-      socket.emit('clearEvents')
+      io.emit('clearEvents')
+      io.emit('event', 'Новая игра')
+      players[0].socket.broadcast.emit('event', `Ход ${players[0].name}`)
+      players[0].socket.emit('event', `Ваш ход`)
     }
     currentPlayer = players[idx]
 
